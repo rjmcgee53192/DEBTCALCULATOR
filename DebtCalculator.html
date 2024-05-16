@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debt Calculator</title>
+    <style>
+        #result {
+            margin-top: 20px;
+            font-size: 16px;
+            white-space: pre;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Debt Calculator</h1>
+
+<button onclick="calculateDebt()">Calculate Debt</button>
+
+<div id="result"></div>
+
+<script>
+    function calculateDebt() {
+        let initialAmount = 17000; // Starting debt
+        let annualInterestRate = 0.08; // Annual interest rate (8%)
+        let monthlyInterestRate = annualInterestRate / 12; // Monthly interest rate
+
+        // Initial payments and dates
+        let payments = [
+            400, 400, 200, 100, 100, 100, 100, 200, 100, 100, 100, 100, 100, 100, 100,
+            100, 100, 100, 200, 100, 100, 100, 100, 250, 100, 100, 100, 100, 100, 100,
+            100, 100, 100, 100, 100, 100, 400, 5000, 100, 100, 100, 100, 100, 100, 100, 
+            200, 200, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100
+        ];
+
+        let dates = [
+            '1/16/2018', '7/27/2018', '9/7/2018', '10/4/2018', '11/7/2018', '12/1/2018', '1/1/2019', '1/7/2019',
+            '2/1/2019', '3/1/2019', '4/1/2019', '5/1/2019', '6/1/2019', '7/1/2019', '8/1/2019', '9/1/2019',
+            '10/1/2019', '10/25/2019', '11/1/2019', '11/4/2019', '12/2/2019', '1/2/2020', '2/3/2020', '3/2/2020',
+            '3/12/2020', '3/31/2020', '4/1/2020', '5/1/2020', '6/1/2020', '7/1/2020', '8/3/2020', '9/1/2020',
+            '10/1/2020', '11/2/2020', '12/1/2020', '1/4/2021', '1/25/2021', '2/1/2021', '2/3/2021', '2/15/2021',
+            '3/1/2021', '4/1/2021', '5/3/2021', '6/1/2021', '6/13/2021', '7/1/2021', '7/11', '8/1/2021', '8/8/2021',
+            '8/16/2021', '8/31/2021', '9/1/2021', '9/18/2021', '10/2/2021', '10/22/2021', '11/1/2021', '12/1/2021',
+            '1/1/2022', '1/24/2022', '2/1/2022', '2/4/2022', '3/1/2022', '4/1/2022', '5/1/2022', '6/1/2022', '7/1/2022',
+            '8/1/2022', '9/1/2022', '10/1/2022', '11/1/2022', '12/1/2022'
+        ];
+
+        // Additional payments from 9/26/2017 to 8/26/2018 (11 payments of $76.67)
+        let additionalPaymentStartDate = new Date(2017, 8, 26); // September 2017
+        for (let i = 0; i < 11; i++) {
+            let date = new Date(additionalPaymentStartDate);
+            date.setMonth(date.getMonth() + i);
+            dates.push(date.toLocaleDateString());
+            payments.push(76.67);
+        }
+
+        // Additional 62 monthly payments of $86.67 starting from 9/26/2018
+        let additionalPaymentStartDate2 = new Date(2018, 8, 26); // September 2018
+        for (let i = 0; i < 62; i++) {
+            let date = new Date(additionalPaymentStartDate2);
+            date.setMonth(date.getMonth() + i);
+            dates.push(date.toLocaleDateString());
+            payments.push(86.67);
+        }
+
+        // Additional borrowings
+        let borrowings = {
+            '8/21/2017': 500,
+            '9/14/2017': 900
+            // Add other borrowing dates and amounts here if necessary
+        };
+
+        let remainingAmount = initialAmount;
+        let tableText = "Date       | Amount Paid  | Interest Paid | Amount Remaining\n";
+        tableText += "-------------------------------------------------------------\n";
+
+        for (let i = 0; i < payments.length; i++) {
+            let paymentDate = new Date(dates[i]);
+            let payment = payments[i];
+
+            // Check if there's a borrowing on this date
+            if (borrowings[paymentDate.toLocaleDateString()]) {
+                remainingAmount += borrowings[paymentDate.toLocaleDateString()];
+            }
+
+            let interest = remainingAmount * monthlyInterestRate;
+            remainingAmount = remainingAmount - payment + interest; // Subtract payment and add interest
+
+            tableText += `${dates[i]} | $${payment.toFixed(2)} | $${interest.toFixed(2)} | $${remainingAmount.toFixed(2)}\n`;
+        }
+
+        document.getElementById('result').textContent = tableText;
+    }
+</script>
+
+</body>
+</html>
